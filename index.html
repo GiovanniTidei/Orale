@@ -1,472 +1,298 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Siti UNESCO Italia</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: #f5f5f5;
-        }
-
-        .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            padding: 20px;
-            z-index: 100;
-        }
-
-        .header-top {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .lang-btn {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .lang-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
-
-        .site-display {
-            background: #f9f9f9;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            font-size: 15px;
-            color: #333;
-            font-weight: 500;
-            min-height: 20px;
-        }
-
-        .site-display .number {
-            color: #667eea;
-            font-weight: 700;
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 14px;
-        }
-
-        .btn-play {
-            background: #48bb78;
-            color: white;
-        }
-
-        .btn-play:hover:not(:disabled) {
-            background: #38a169;
-            transform: translateY(-2px);
-        }
-
-        .btn-stop {
-            background: #f56565;
-            color: white;
-        }
-
-        .btn-stop:hover:not(:disabled) {
-            background: #e53e3e;
-            transform: translateY(-2px);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background: #e0e0e0;
-            border-radius: 3px;
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: #667eea;
-            width: 0%;
-            transition: width 0.05s linear;
-        }
-
-        .list-container {
-            margin-top: 240px;
-            padding: 0 20px 20px;
-        }
-
-        .site-item {
-            background: white;
-            padding: 16px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-left: 4px solid #ddd;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .site-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transform: translateX(4px);
-        }
-
-        .site-item.active {
-            background: #667eea;
-            color: white;
-            border-left-color: #667eea;
-        }
-
-        .site-number {
-            display: inline-block;
-            background: rgba(102, 126, 234, 0.1);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 700;
-            margin-right: 8px;
-            font-size: 12px;
-        }
-
-        .site-item.active .site-number {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .site-region {
-            font-size: 13px;
-            color: #999;
-            margin-top: 4px;
-        }
-
-        .site-item.active .site-region {
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        @media (max-width: 480px) {
-            .header {
-                padding: 16px;
-            }
-
-            .list-container {
-                margin-top: 220px;
-                padding: 0 16px 16px;
-            }
-
-            .site-item {
-                padding: 12px;
-            }
-
-            .btn {
-                font-size: 13px;
-                padding: 10px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siti UNESCO Italia</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5}
+.header{position:fixed;top:0;left:0;right:0;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.1);padding:20px;z-index:100}
+.header-top{display:flex;gap:12px;margin-bottom:16px}
+.lang-btn{flex:1;padding:10px;border:2px solid #ddd;background:#fff;border-radius:8px;cursor:pointer;font-weight:600;transition:all .3s;color:#666;font-size:14px}
+.lang-btn.active{background:#667eea;color:#fff;border-color:#667eea}
+.site-display{background:#f9f9f9;padding:12px;border-radius:8px;margin-bottom:12px;font-size:15px;color:#333;font-weight:500;min-height:20px}
+.site-display .number{color:#667eea;font-weight:700}
+.controls{display:flex;gap:10px;margin-bottom:12px}
+.btn{flex:1;padding:12px;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all .3s;font-size:14px}
+.btn-play{background:#48bb78;color:#fff}
+.btn-play:hover:not(:disabled){background:#38a169;transform:translateY(-2px)}
+.btn-stop{background:#f56565;color:#fff}
+.btn-stop:hover:not(:disabled){background:#e53e3e;transform:translateY(-2px)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.progress-wrap{position:relative;width:100%;height:10px;background:#e0e0e0;border-radius:5px;cursor:pointer;user-select:none}
+.progress-bar{height:100%;background:#667eea;border-radius:5px;width:0%;pointer-events:none;transition:width .05s linear}
+.progress-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;background:#667eea;border-radius:50%;left:0%;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:left .05s linear}
+.list-container{margin-top:240px;padding:0 20px 20px}
+.site-item{background:#fff;padding:16px;margin-bottom:10px;border-radius:8px;cursor:pointer;transition:all .3s;border-left:4px solid #ddd;box-shadow:0 2px 4px rgba(0,0,0,.05)}
+.site-item:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateX(4px)}
+.site-item.active{background:#667eea;color:#fff;border-left-color:#667eea}
+.site-number{display:inline-block;background:rgba(102,126,234,.1);padding:2px 8px;border-radius:4px;font-weight:700;margin-right:8px;font-size:12px}
+.site-item.active .site-number{background:rgba(255,255,255,.3)}
+.site-region{font-size:13px;color:#999;margin-top:4px}
+.site-item.active .site-region{color:rgba(255,255,255,.8)}
+@media(max-width:480px){
+  .header{padding:16px}
+  .list-container{margin-top:220px;padding:0 16px 16px}
+  .site-item{padding:12px}
+  .btn{font-size:13px;padding:10px}
+}
+</style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-top">
-            <button class="lang-btn active" data-lang="it">🇮🇹 ITA</button>
-            <button class="lang-btn" data-lang="en">🇬🇧 ENG</button>
-        </div>
+<div class="header">
+  <div class="header-top">
+    <button class="lang-btn active" data-lang="it">🇮🇹 ITA</button>
+    <button class="lang-btn" data-lang="en">🇬🇧 ENG</button>
+  </div>
+  <div class="site-display" id="siteDisplay">Seleziona un sito per iniziare</div>
+  <div class="controls">
+    <button class="btn btn-play" id="playBtn">▶ PLAY</button>
+    <button class="btn btn-stop" id="stopBtn">⏸ PAUSA</button>
+  </div>
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="progress-thumb" id="progressThumb"></div>
+  </div>
+</div>
 
-        <div class="site-display" id="siteDisplay">
-            Seleziona un sito per iniziare
-        </div>
+<div class="list-container" id="listContainer"></div>
 
-        <div class="controls">
-            <button class="btn btn-play" id="playBtn">▶ PLAY</button>
-            <button class="btn btn-stop" id="stopBtn">⏸ PAUSA</button>
-        </div>
+<script>
+const sites = [
+  {region:"Abruzzo",name:"Alba Fucens Massa d'Albe",city:"L'Aquila",it:"ai piedi del Monte Velino, in una posizione strategica che permetteva di controllare i collegamenti tra l'Italia centrale e il versante adriatico. Alba Fucens fu fondata come colonia romana nel 303 a.C. e divenne uno dei principali centri di controllo del territorio.",en:"Alba Fucens is an archaeological site of great importance located in Abruzzo. The Roman city preserves fascinating traces of ancient civilization and represents unique cultural heritage."},
+  {region:"Basilicata",name:"Sassi di Matera",city:"Matera",it:"Test prova sito numero 2",en:"Test proof site number 2"},
+  {region:"Calabria",name:"Capo Colonna",city:"Crotone",it:"Test prova sito numero 3",en:"Test proof site number 3"},
+  {region:"Calabria",name:"Parco archeologico di Scolacium",city:"Borgia",it:"Test prova sito numero 4",en:"Test proof site number 4"},
+  {region:"Campania",name:"Reggia di Caserta",city:"Caserta",it:"Test prova sito numero 5",en:"Test proof site number 5"},
+  {region:"Campania",name:"Parco Nazionale del Cilento",city:"Vallo della Lucania",it:"Test prova sito numero 6",en:"Test proof site number 6"},
+  {region:"Emilia-Romagna",name:"Area archeologica di Marzabotto",city:"Bologna",it:"Test prova sito numero 7",en:"Test proof site number 7"},
+  {region:"Emilia-Romagna",name:"I Portici di Bologna",city:"Bologna",it:"Test prova sito numero 8",en:"Test proof site number 8"},
+  {region:"Emilia-Romagna",name:"Monumenti Paleocristiani di Ravenna",city:"Ravenna",it:"Test prova sito numero 9",en:"Test proof site number 9"},
+  {region:"Friuli-Venezia Giulia",name:"Area Archeologica di Aquileia",city:"Udine",it:"Test prova sito numero 10",en:"Test proof site number 10"},
+  {region:"Lazio",name:"Castel Sant'Angelo",city:"Roma",it:"Test prova sito numero 11",en:"Test proof site number 11"},
+  {region:"Lazio",name:"Domus Aurea",city:"Roma",it:"Test prova sito numero 12",en:"Test proof site number 12"},
+  {region:"Lazio",name:"Villa Adriana",city:"Tivoli",it:"Test prova sito numero 13",en:"Test proof site number 13"},
+  {region:"Lazio",name:"Villa d'Este",city:"Tivoli",it:"Test prova sito numero 14",en:"Test proof site number 14"},
+  {region:"Lazio",name:"Villa dei Quintili",city:"Roma",it:"Test prova sito numero 15",en:"Test proof site number 15"},
+  {region:"Liguria",name:"Strade Nuove e Palazzi dei Rolli",city:"Genova",it:"Test prova sito numero 16",en:"Test proof site number 16"},
+  {region:"Lombardia",name:"Arte rupestre della Val Camonica",city:"Capo di Ponte",it:"Test prova sito numero 17",en:"Test proof site number 17"},
+  {region:"Lombardia",name:"Grotte di Catullo",city:"Sirmione",it:"Test prova sito numero 18",en:"Test proof site number 18"},
+  {region:"Marche",name:"Parco Archeologico di Urbisaglia",city:"Macerata",it:"Test prova sito numero 19",en:"Test proof site number 19"},
+  {region:"Molise",name:"Parco Archeologico di Sepino",city:"Campobasso",it:"Test prova sito numero 20",en:"Test proof site number 20"},
+  {region:"Piemonte",name:"Mole Antonelliana",city:"Torino",it:"Test prova sito numero 21",en:"Test proof site number 21"},
+  {region:"Piemonte",name:"Castello di Racconigi",city:"Cuneo",it:"Test prova sito numero 22",en:"Test proof site number 22"},
+  {region:"Puglia",name:"Castel del Monte",city:"Andria",it:"Test prova sito numero 23",en:"Test proof site number 23"},
+  {region:"Puglia",name:"Trulli di Alberobello",city:"Alberobello",it:"Test prova sito numero 24",en:"Test proof site number 24"},
+  {region:"Sardegna",name:"Su Nuraxi di Barumini",city:"Barumini",it:"Test prova sito numero 25",en:"Test proof site number 25"},
+  {region:"Sardegna",name:"Museo della Statuaria Preistorica",city:"Laconi",it:"Test prova sito numero 26",en:"Test proof site number 26"},
+  {region:"Sardegna",name:"Parco Archeologico di Turris Libisonis",city:"Porto Torres",it:"Test prova sito numero 27",en:"Test proof site number 27"},
+  {region:"Sicilia",name:"Area Archeologica di Agrigento",city:"Agrigento",it:"Test prova sito numero 28",en:"Test proof site number 28"},
+  {region:"Sicilia",name:"Città tardo barocche della Val di Noto",city:"Noto",it:"Test prova sito numero 29",en:"Test proof site number 29"},
+  {region:"Sicilia",name:"Monte Etna",city:"Catania",it:"Test prova sito numero 30",en:"Test proof site number 30"},
+  {region:"Sicilia",name:"Palermo arabo-normanna",city:"Palermo",it:"Test prova sito numero 31",en:"Test proof site number 31"},
+  {region:"Sicilia",name:"Villa Romana del Casale",city:"Ragusa",it:"Test prova sito numero 32",en:"Test proof site number 32"},
+  {region:"Toscana",name:"Centro storico di San Gimignano",city:"Siena",it:"Test prova sito numero 33",en:"Test proof site number 33"},
+  {region:"Toscana",name:"Ponte Vecchio",city:"Firenze",it:"Test prova sito numero 34",en:"Test proof site number 34"},
+  {region:"Toscana",name:"Piazza dei Miracoli",city:"Pisa",it:"Test prova sito numero 35",en:"Test proof site number 35"},
+  {region:"Umbria",name:"Assisi, Basilica di San Francesco",city:"Perugia",it:"Test prova sito numero 36",en:"Test proof site number 36"},
+  {region:"Valle d'Aosta",name:"Area megalitica di Saint-Martin-de-Corléans",city:"Aosta",it:"Test prova sito numero 37",en:"Test proof site number 37"},
+  {region:"Veneto",name:"Centro storico di Verona",city:"Verona",it:"Test prova sito numero 38",en:"Test proof site number 38"},
+  {region:"Veneto",name:"Ponte di Rialto",city:"Venezia",it:"Test prova sito numero 39",en:"Test proof site number 39"},
+  {region:"Veneto",name:"Dolomiti",city:"Belluno",it:"Test prova sito numero 40",en:"Test proof site number 40"}
+];
 
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-    </div>
+// --- State ---
+let lang = 'it';
+let selectedIdx = -1;
+let isPlaying = false;
+let utterance = null;
+// charIndex of the LAST boundary event received (= last word start)
+let lastBoundaryChar = 0;
+// charIndex where current playback started (offset into full text)
+let playOffset = 0;
+// progress % at pause moment (for bar display)
+let pausedPercent = 0;
 
-    <div class="list-container" id="listContainer"></div>
+// --- DOM ---
+const playBtn = document.getElementById('playBtn');
+const stopBtn = document.getElementById('stopBtn');
+const siteDisplay = document.getElementById('siteDisplay');
+const listContainer = document.getElementById('listContainer');
+const progressBar = document.getElementById('progressBar');
+const progressThumb = document.getElementById('progressThumb');
+const progressWrap = document.getElementById('progressWrap');
 
-    <audio id="audioSession" style="display:none;"></audio>
+// --- Build list ---
+sites.forEach((s, i) => {
+  const el = document.createElement('div');
+  el.className = 'site-item';
+  el.dataset.index = i;
+  el.innerHTML = `<span class="site-number">${i+1}</span><strong>${s.name}</strong><div class="site-region">${i+1}. ${s.region} • ${s.city}</div>`;
+  el.addEventListener('click', () => selectSite(i));
+  listContainer.appendChild(el);
+});
 
-    <script>
-        const sites = [
-            { region: "Abruzzo", name: "Alba Fucens Massa d'Albe", city: "L'Aquila",
-            it: "ai piedi del Monte Velino, in una posizione strategica che permetteva di controllare i collegamenti tra l'Italia centrale e il versante adriatico. Alba Fucens fu fondata come colonia romana nel 303 a.C. e divenne uno dei principali centri di controllo del territorio.",
-            en: "Alba Fucens is an archaeological site of great importance located in Abruzzo. The Roman city preserves fascinating traces of ancient civilization and represents unique cultural heritage." },
-            { region: "Basilicata", name: "Sassi di Matera", city: "Matera", it: "Test prova sito numero 2", en: "Test proof site number 2" },
-            { region: "Calabria", name: "Capo Colonna", city: "Crotone", it: "Test prova sito numero 3", en: "Test proof site number 3" },
-            { region: "Calabria", name: "Parco archeologico di Scolacium", city: "Borgia", it: "Test prova sito numero 4", en: "Test proof site number 4" },
-            { region: "Campania", name: "Reggia di Caserta", city: "Caserta", it: "Test prova sito numero 5", en: "Test proof site number 5" },
-            { region: "Campania", name: "Parco Nazionale del Cilento", city: "Vallo della Lucania", it: "Test prova sito numero 6", en: "Test proof site number 6" },
-            { region: "Emilia-Romagna", name: "Area archeologica di Marzabotto", city: "Bologna", it: "Test prova sito numero 7", en: "Test proof site number 7" },
-            { region: "Emilia-Romagna", name: "I Portici di Bologna", city: "Bologna", it: "Test prova sito numero 8", en: "Test proof site number 8" },
-            { region: "Emilia-Romagna", name: "Monumenti Paleocristiani di Ravenna", city: "Ravenna", it: "Test prova sito numero 9", en: "Test proof site number 9" },
-            { region: "Friuli-Venezia Giulia", name: "Area Archeologica di Aquileia", city: "Udine", it: "Test prova sito numero 10", en: "Test proof site number 10" },
-            { region: "Lazio", name: "Castel Sant'Angelo", city: "Roma", it: "Test prova sito numero 11", en: "Test proof site number 11" },
-            { region: "Lazio", name: "Domus Aurea", city: "Roma", it: "Test prova sito numero 12", en: "Test proof site number 12" },
-            { region: "Lazio", name: "Villa Adriana", city: "Tivoli", it: "Test prova sito numero 13", en: "Test proof site number 13" },
-            { region: "Lazio", name: "Villa d'Este", city: "Tivoli", it: "Test prova sito numero 14", en: "Test proof site number 14" },
-            { region: "Lazio", name: "Villa dei Quintili", city: "Roma", it: "Test prova sito numero 15", en: "Test proof site number 15" },
-            { region: "Liguria", name: "Strade Nuove e Palazzi dei Rolli", city: "Genova", it: "Test prova sito numero 16", en: "Test proof site number 16" },
-            { region: "Lombardia", name: "Arte rupestre della Val Camonica", city: "Capo di Ponte", it: "Test prova sito numero 17", en: "Test proof site number 17" },
-            { region: "Lombardia", name: "Grotte di Catullo", city: "Sirmione", it: "Test prova sito numero 18", en: "Test proof site number 18" },
-            { region: "Marche", name: "Parco Archeologico di Urbisaglia", city: "Macerata", it: "Test prova sito numero 19", en: "Test proof site number 19" },
-            { region: "Molise", name: "Parco Archeologico di Sepino", city: "Campobasso", it: "Test prova sito numero 20", en: "Test proof site number 20" },
-            { region: "Piemonte", name: "Mole Antonelliana", city: "Torino", it: "Test prova sito numero 21", en: "Test proof site number 21" },
-            { region: "Piemonte", name: "Castello di Racconigi", city: "Cuneo", it: "Test prova sito numero 22", en: "Test proof site number 22" },
-            { region: "Puglia", name: "Castel del Monte", city: "Andria", it: "Test prova sito numero 23", en: "Test proof site number 23" },
-            { region: "Puglia", name: "Trulli di Alberobello", city: "Alberobello", it: "Test prova sito numero 24", en: "Test proof site number 24" },
-            { region: "Sardegna", name: "Su Nuraxi di Barumini", city: "Barumini", it: "Test prova sito numero 25", en: "Test proof site number 25" },
-            { region: "Sardegna", name: "Museo della Statuaria Preistorica", city: "Laconi", it: "Test prova sito numero 26", en: "Test proof site number 26" },
-            { region: "Sardegna", name: "Parco Archeologico di Turris Libisonis", city: "Porto Torres", it: "Test prova sito numero 27", en: "Test proof site number 27" },
-            { region: "Sicilia", name: "Area Archeologica di Agrigento", city: "Agrigento", it: "Test prova sito numero 28", en: "Test proof site number 28" },
-            { region: "Sicilia", name: "Città tardo barocche della Val di Noto", city: "Noto", it: "Test prova sito numero 29", en: "Test proof site number 29" },
-            { region: "Sicilia", name: "Monte Etna", city: "Catania", it: "Test prova sito numero 30", en: "Test proof site number 30" },
-            { region: "Sicilia", name: "Palermo arabo-normanna", city: "Palermo", it: "Test prova sito numero 31", en: "Test proof site number 31" },
-            { region: "Sicilia", name: "Villa Romana del Casale", city: "Ragusa", it: "Test prova sito numero 32", en: "Test proof site number 32" },
-            { region: "Toscana", name: "Centro storico di San Gimignano", city: "Siena", it: "Test prova sito numero 33", en: "Test proof site number 33" },
-            { region: "Toscana", name: "Ponte Vecchio", city: "Firenze", it: "Test prova sito numero 34", en: "Test proof site number 34" },
-            { region: "Toscana", name: "Piazza dei Miracoli", city: "Pisa", it: "Test prova sito numero 35", en: "Test proof site number 35" },
-            { region: "Umbria", name: "Assisi, Basilica di San Francesco", city: "Perugia", it: "Test prova sito numero 36", en: "Test proof site number 36" },
-            { region: "Valle d'Aosta", name: "Area megalitica di Saint-Martin-de-Corléans", city: "Aosta", it: "Test prova sito numero 37", en: "Test proof site number 37" },
-            { region: "Veneto", name: "Centro storico di Verona", city: "Verona", it: "Test prova sito numero 38", en: "Test proof site number 38" },
-            { region: "Veneto", name: "Ponte di Rialto", city: "Venezia", it: "Test prova sito numero 39", en: "Test proof site number 39" },
-            { region: "Veneto", name: "Dolomiti", city: "Belluno", it: "Test prova sito numero 40", en: "Test proof site number 40" }
-        ];
+// --- Language buttons ---
+document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  lang = btn.dataset.lang;
+  stopAll();
+}));
 
-        let currentLang = 'it';
-        let selectedIndex = -1;
-        let isPlaying = false;
-        let currentUtterance = null;
-        let progressInterval = null;
+// --- Core helpers ---
+function getText() {
+  if (selectedIdx < 0) return '';
+  return lang === 'it' ? sites[selectedIdx].it : sites[selectedIdx].en;
+}
 
-        let playbackStartTime = null;
-        let pausedTime = 0;
-        let estimatedDuration = 0;
+function setProgress(pct) {
+  progressBar.style.width = pct + '%';
+  progressThumb.style.left = pct + '%';
+}
 
-        const langBtns = document.querySelectorAll('.lang-btn');
-        const playBtn = document.getElementById('playBtn');
-        const stopBtn = document.getElementById('stopBtn');
-        const siteDisplay = document.getElementById('siteDisplay');
-        const listContainer = document.getElementById('listContainer');
-        const progressBar = document.getElementById('progressBar');
-        const progressContainer = progressBar.parentElement;
-        const audioSession = document.getElementById('audioSession');
+function stopAll() {
+  speechSynthesis.cancel();
+  isPlaying = false;
+  playBtn.disabled = false;
+  // reset only if we stop explicitly (not pause)
+}
 
-        let isDragging = false;
+function stopAndReset() {
+  stopAll();
+  lastBoundaryChar = 0;
+  playOffset = 0;
+  pausedPercent = 0;
+  setProgress(0);
+}
 
-        function keepAudioSessionActive() {
-            if (audioSession.paused) {
-                audioSession.play().catch(() => {});
-            }
-        }
+// --- Select site ---
+function selectSite(idx) {
+  if (idx !== selectedIdx) stopAndReset();
+  selectedIdx = idx;
+  document.querySelectorAll('.site-item').forEach(el => el.classList.remove('active'));
+  document.querySelector(`[data-index="${idx}"]`).classList.add('active');
+  siteDisplay.innerHTML = `<span class="number">${idx+1}.</span> ${sites[idx].name}`;
+}
 
-        // Popola lista siti
-        sites.forEach((site, index) => {
-            const item = document.createElement('div');
-            item.className = 'site-item';
-            item.dataset.index = index;
-            item.innerHTML = `
-                <span class="site-number">${index + 1}</span>
-                <strong>${site.name}</strong>
-                <div class="site-region">${index + 1}. ${site.region} • ${site.city}</div>
-            `;
-            item.addEventListener('click', () => selectSite(index));
-            listContainer.appendChild(item);
-        });
+// --- Speak from charIndex ---
+function speakFrom(charIdx) {
+  speechSynthesis.cancel();
+  const fullText = getText();
+  if (!fullText) return;
 
-        // Cambio lingua
-        langBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                langBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentLang = btn.dataset.lang;
-                stopSpeech();
-            });
-        });
+  // Snap charIdx to start of nearest word boundary
+  const snapped = snapToWord(fullText, charIdx);
+  playOffset = snapped;
+  lastBoundaryChar = 0;
 
-        function stopSpeech() {
-            speechSynthesis.cancel();
-            isPlaying = false;
-            playBtn.disabled = false;
-            if (progressInterval) clearInterval(progressInterval);
-            progressBar.style.width = '0%';
-            playbackStartTime = null;
-            pausedTime = 0;
-            estimatedDuration = 0;
-        }
+  const textToSpeak = fullText.substring(snapped);
+  utterance = new SpeechSynthesisUtterance(textToSpeak);
+  utterance.lang = lang === 'it' ? 'it-IT' : 'en-GB';
+  utterance.rate = lang === 'it' ? 1 : 0.9;
 
-        function pauseSpeech() {
-            if (!isPlaying) return;
+  utterance.onboundary = (e) => {
+    if (e.name !== 'word') return;
+    lastBoundaryChar = e.charIndex;
+    // Progress = fraction of total text consumed
+    const pct = Math.min(((playOffset + e.charIndex) / fullText.length) * 100, 100);
+    setProgress(pct);
+  };
 
-            speechSynthesis.cancel();
+  utterance.onstart = () => {
+    isPlaying = true;
+    playBtn.disabled = true;
+    // Restore bar to position where we started this segment
+    const startPct = (playOffset / fullText.length) * 100;
+    setProgress(startPct);
+  };
 
-            const now = Date.now();
-            pausedTime = now - playbackStartTime;
+  utterance.onend = () => {
+    isPlaying = false;
+    playBtn.disabled = false;
+    // Only mark 100% if we actually reached the end
+    if (playOffset + utterance.text.length >= fullText.length) {
+      setProgress(100);
+      // reset for next play
+      lastBoundaryChar = 0;
+      playOffset = 0;
+      pausedPercent = 0;
+    }
+  };
 
-            if (progressInterval) clearInterval(progressInterval);
-            isPlaying = false;
-            playBtn.disabled = false;
-        }
+  utterance.onerror = () => {
+    isPlaying = false;
+    playBtn.disabled = false;
+  };
 
-        function playFromPaused() {
-            const site = sites[selectedIndex];
-            const fullText = currentLang === 'it' ? site.it : site.en;
-            const rate = currentLang === 'it' ? 1 : 0.9;
+  speechSynthesis.speak(utterance);
+}
 
-            const charsPronounced = Math.floor((pausedTime / estimatedDuration) * fullText.length * rate);
-            const remainingText = fullText.substring(charsPronounced);
+// Snap charIdx to the start of the nearest word (avoid starting mid-word)
+function snapToWord(text, charIdx) {
+  if (charIdx <= 0) return 0;
+  // Move back to start of current word if we're mid-word
+  let i = charIdx;
+  // If we're not on a space/start, walk back to start of word
+  while (i > 0 && !/\s/.test(text[i-1])) i--;
+  return i;
+}
 
-            if (!remainingText) {
-                playbackStartTime = null;
-                pausedTime = 0;
-                return;
-            }
+// --- Play button ---
+playBtn.addEventListener('click', () => {
+  if (selectedIdx < 0 || isPlaying) return;
+  // Resume from last known word boundary (go back 1 word for safety)
+  const resumeChar = getResumeChar();
+  speakFrom(resumeChar);
+});
 
-            currentUtterance = new SpeechSynthesisUtterance(remainingText);
-            currentUtterance.lang = currentLang === 'it' ? 'it-IT' : 'en-GB';
-            currentUtterance.rate = rate;
+function getResumeChar() {
+  const fullText = getText();
+  const absChar = playOffset + lastBoundaryChar;
+  if (absChar <= 0) return 0;
+  // Go back to the previous word before lastBoundaryChar for a smooth overlap
+  const textBefore = fullText.substring(0, absChar);
+  // Find start of the word BEFORE the last boundary word
+  const trimmed = textBefore.trimEnd();
+  const prevSpace = trimmed.lastIndexOf(' ');
+  return prevSpace > 0 ? prevSpace + 1 : 0;
+}
 
-            currentUtterance.onstart = () => {
-                isPlaying = true;
-                playBtn.disabled = true;
-                playbackStartTime = Date.now() - pausedTime;
-                startProgress();
-                keepAudioSessionActive();
-                const keepAliveInterval = setInterval(() => {
-                    if (!isPlaying) clearInterval(keepAliveInterval);
-                    keepAudioSessionActive();
-                }, 1000);
-            };
+// --- Pause button ---
+stopBtn.addEventListener('click', () => {
+  if (!isPlaying) return;
+  // Save pause position
+  pausedPercent = parseFloat(progressBar.style.width) || 0;
+  speechSynthesis.cancel();
+  isPlaying = false;
+  playBtn.disabled = false;
+  setProgress(pausedPercent);
+});
 
-            currentUtterance.onend = () => {
-                isPlaying = false;
-                playBtn.disabled = false;
-                playbackStartTime = null;
-                pausedTime = 0;
-                if (progressInterval) clearInterval(progressInterval);
-                progressBar.style.width = '100%';
-            };
+// --- Progress bar seek (click & drag) ---
+function seekTo(e) {
+  const rect = progressWrap.getBoundingClientRect();
+  const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+  const pct = Math.max(0, Math.min(1, x / rect.width));
+  const fullText = getText();
+  if (!fullText || selectedIdx < 0) return;
+  const charIdx = Math.floor(pct * fullText.length);
+  // Reset boundary tracking then play from there
+  lastBoundaryChar = 0;
+  playOffset = 0;
+  pausedPercent = 0;
+  setProgress(pct * 100);
+  speakFrom(charIdx);
+}
 
-            speechSynthesis.speak(currentUtterance);
-        }
-
-        // Seleziona sito
-        function selectSite(index) {
-            if (selectedIndex !== index) {
-                stopSpeech();
-            }
-
-            selectedIndex = index;
-            document.querySelectorAll('.site-item').forEach(item => item.classList.remove('active'));
-            document.querySelector(`[data-index="${index}"]`).classList.add('active');
-
-            const site = sites[index];
-            siteDisplay.innerHTML = `<span class="number">${index + 1}.</span> ${site.name}`;
-        }
-
-        // Play
-        playBtn.addEventListener('click', () => {
-            if (selectedIndex === -1) return;
-            if (isPlaying) return;
-
-            if (pausedTime > 0) {
-                playFromPaused();
-                return;
-            }
-
-            const site = sites[selectedIndex];
-            const text = currentLang === 'it' ? site.it : site.en;
-
-            currentUtterance = new SpeechSynthesisUtterance(text);
-            currentUtterance.lang = currentLang === 'it' ? 'it-IT' : 'en-GB';
-            currentUtterance.rate = currentLang === 'it' ? 1 : 0.9;
-
-            currentUtterance.onstart = () => {
-                isPlaying = true;
-                playBtn.disabled = true;
-                playbackStartTime = Date.now();
-                pausedTime = 0;
-                estimatedDuration = text.length * 40;
-                startProgress();
-                keepAudioSessionActive();
-                const keepAliveInterval = setInterval(() => {
-                    if (!isPlaying) clearInterval(keepAliveInterval);
-                    keepAudioSessionActive();
-                }, 1000);
-            };
-
-            currentUtterance.onend = () => {
-                isPlaying = false;
-                playBtn.disabled = false;
-                playbackStartTime = null;
-                totalPausedTime = 0;
-                if (progressInterval) clearInterval(progressInterval);
-                progressBar.style.width = '100%';
-            };
-
-            speechSynthesis.speak(currentUtterance);
-        });
-        // Stop/Pausa
-        stopBtn.addEventListener('click', pauseSpeech);
-
-        function startProgress() {
-            if (progressInterval) clearInterval(progressInterval);
-            progressBar.style.width = '0%';
-
-            progressInterval = setInterval(() => {
-                if (!playbackStartTime) return;
-
-                const now = Date.now();
-                const currentElapsed = (now - playbackStartTime) + pausedTime;
-                const percent = Math.min((currentElapsed / estimatedDuration) * 100, 100);
-                progressBar.style.width = percent + '%';
-
-                if (percent >= 100) {
-                    clearInterval(progressInterval);
-                }
-            }, 50);
-        }
-
-        function resetProgress() {
-            if (progressInterval) clearInterval(progressInterval);
-            progressBar.style.width = '0%';
-        }
-    </script>
+let dragging = false;
+progressWrap.addEventListener('mousedown', e => { dragging = true; seekTo(e); });
+document.addEventListener('mousemove', e => { if (dragging) seekTo(e); });
+document.addEventListener('mouseup', () => { dragging = false; });
+progressWrap.addEventListener('touchstart', e => { dragging = true; seekTo(e); }, {passive:true});
+document.addEventListener('touchmove', e => { if (dragging) seekTo(e); }, {passive:true});
+document.addEventListener('touchend', () => { dragging = false; });
+</script>
 </body>
 </html>
