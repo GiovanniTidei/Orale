@@ -190,6 +190,8 @@ let playStartTime = 0;       // Date.now() when current segment started
 let playOffset = 0;          // absolute char index where current segment started
 let pauseCharIdx = 0;        // absolute char index saved at pause — used for resume
 let animFrame = null;        // rAF handle
+let chunks = [];
+let currentChunkIdx = 0;
  
 // ─── Chars-per-second estimate ────────────────────────────────────────────────
 // Default speech is ~150 wpm. Italian avg word ~5.5 chars + 1 space = ~6.5 chars.
@@ -274,6 +276,7 @@ function cancelSpeech() {
   stopAnimation();
   isPlaying = false;
   playBtn.disabled = false;
+  chunks = [];
 }
  
 function stopAndReset() {
@@ -292,56 +295,107 @@ function selectSite(idx) {
   siteDisplay.innerHTML = `<span class="number">${idx+1}.</span> ${sites[idx].name}`;
 }
  
+// Divide il testo in pezzi da max ~2500 caratteri, tagliando sui punti/punto e virgola
+function splitIntoChunks(text, maxLen) {
+  const result = [];
+  let start = 0;
+  while (start < text.length) {
+    let end = Math.min(start + maxLen, text.length);
+    if (end < text.length) {
+      // cerca l'ultimo punto/newline prima di end
+      let cut = -1;
+      for (let i = end; i > start + maxLen * 0.5; i--) {
+        if ('.!?\n'.includes(text[i])) { cut = i + 1; break; }
+      }
+      if (cut > start) end = cut;
+    }
+    result.push({ start, end, text: text.slice(start, end) });
+    start = end;
+  }
+  return result;
+}
+
 // ─── Core: speak from absolute char index ─────────────────────────────────────
 function speakFrom(charIdx) {
   cancelSpeech();
   const fullText = getText();
   if (!fullText) return;
- 
+
   const snapped = snapToWord(fullText, charIdx);
+  pauseCharIdx = snapped;
+
+  // Costruisci i chunk dall'inizio
+  const allChunks = splitIntoChunks(fullText, 2500);
+
+  // Trova il chunk da cui partire (quello che contiene snapped)
+  let startChunk = 0;
+  for (let i = 0; i < allChunks.length; i++) {
+    if (allChunks[i].end > snapped) { startChunk = i; break; }
+  }
+
+  chunks = allChunks;
+  currentChunkIdx = startChunk;
+
+  // Il primo chunk potrebbe dover partire a metà
+  const firstChunkStart = snapped - allChunks[startChunk].start;
   playOffset = snapped;
-  const textToSpeak = fullText.substring(snapped);
- 
-  utterance = new SpeechSynthesisUtterance(textToSpeak);
-  utterance.lang  = (lang === 'it') ? 'it-IT' : 'en-US';
-  utterance.rate  = (lang === 'it') ? 1.0 : 0.9;
- 
-  // onboundary: fires on desktop, usually NOT on mobile Chrome/Brave.
-  // When it does fire, we use it to self-correct the time-based estimate.
-  utterance.onboundary = (e) => {
-    if (e.name !== 'word') return;
-    // Re-sync the animation start time so time-based tracking stays accurate.
-    playStartTime = Date.now() - (e.charIndex / getCharsPerSecond()) * 1000;
-  };
- 
-  utterance.onstart = () => {
-    isPlaying = true;
-    playBtn.disabled = true;
-    playStartTime = Date.now();
-    startAnimation();
-  };
- 
-  utterance.onend = () => {
-    stopAnimation();
-    isPlaying = false;
-    playBtn.disabled = false;
-    const reachedEnd = (playOffset + textToSpeak.length) >= fullText.length;
-    if (reachedEnd) {
+  playStartTime = Date.now();
+
+  function speakChunk(chunkIdx, offsetInChunk) {
+    if (chunkIdx >= chunks.length) {
+      // Fine testo
+      stopAnimation();
+      isPlaying = false;
+      playBtn.disabled = false;
       setProgress(100);
       playOffset   = 0;
       pauseCharIdx = 0;
+      return;
     }
-  };
- 
-  utterance.onerror = (e) => {
-    // 'interrupted' fires when we cancel deliberately — ignore it
-    if (e.error === 'interrupted') return;
-    stopAnimation();
-    isPlaying = false;
-    playBtn.disabled = false;
-  };
- 
-  speechSynthesis.speak(utterance);
+
+    const chunk = chunks[chunkIdx];
+    const textToSpeak = chunk.text.substring(offsetInChunk || 0);
+
+    utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.lang = (lang === 'it') ? 'it-IT' : 'en-US';
+    utterance.rate = (lang === 'it') ? 1.0 : 0.9;
+
+    utterance.onboundary = (e) => {
+      if (e.name !== 'word') return;
+      playStartTime = Date.now() - (e.charIndex / getCharsPerSecond()) * 1000;
+    };
+
+    utterance.onstart = () => {
+      isPlaying = true;
+      playBtn.disabled = true;
+      playStartTime = Date.now();
+      // playOffset è già impostato correttamente prima di chiamare speakChunk
+      startAnimation();
+    };
+
+    utterance.onend = () => {
+      stopAnimation();
+      if (!isPlaying) return; // pausa/stop manuale
+      currentChunkIdx = chunkIdx + 1;
+      playOffset = chunks[chunkIdx].end;
+      pauseCharIdx = playOffset;
+      playStartTime = Date.now();
+      speakChunk(currentChunkIdx, 0);
+    };
+
+    utterance.onerror = (e) => {
+      if (e.error === 'interrupted') return;
+      stopAnimation();
+      isPlaying = false;
+      playBtn.disabled = false;
+    };
+
+    speechSynthesis.speak(utterance);
+  }
+
+  isPlaying = true;
+  playBtn.disabled = true;
+  speakChunk(startChunk, firstChunkStart > 0 ? firstChunkStart : 0);
 }
  
 // ─── Play button ──────────────────────────────────────────────────────────────
