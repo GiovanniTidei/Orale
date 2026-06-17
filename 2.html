@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siti UNESCO Italia</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5}
+.header{position:fixed;top:0;left:0;right:0;background:#fff;box-shadow:0 4px 12px rgba(0,0,0,.1);padding:20px;z-index:100}
+.header-top{display:flex;gap:12px;margin-bottom:16px}
+.lang-btn{flex:1;padding:10px;border:2px solid #ddd;background:#fff;border-radius:8px;cursor:pointer;font-weight:600;transition:all .3s;color:#666;font-size:14px}
+.lang-btn.active{background:#667eea;color:#fff;border-color:#667eea}
+.site-display{background:#f9f9f9;padding:12px;border-radius:8px;margin-bottom:12px;font-size:15px;color:#333;font-weight:500;min-height:20px}
+.site-display .number{color:#667eea;font-weight:700}
+.controls{display:flex;gap:10px;margin-bottom:12px}
+.btn{flex:1;padding:12px;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all .3s;font-size:14px}
+.btn-play{background:#48bb78;color:#fff}
+.btn-play:hover:not(:disabled){background:#38a169;transform:translateY(-2px)}
+.btn-stop{background:#f56565;color:#fff}
+.btn-stop:hover:not(:disabled){background:#e53e3e;transform:translateY(-2px)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.progress-wrap{position:relative;width:100%;height:10px;background:#e0e0e0;border-radius:5px;cursor:pointer;user-select:none}
+.progress-bar{height:100%;background:#667eea;border-radius:5px;width:0%;pointer-events:none}
+.progress-thumb{position:absolute;top:50%;transform:translate(-50%,-50%);width:16px;height:16px;background:#667eea;border-radius:50%;left:0%;pointer-events:none;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.list-container{margin-top:240px;padding:0 20px 20px}
+.site-item{background:#fff;padding:16px;margin-bottom:10px;border-radius:8px;cursor:pointer;transition:all .3s;border-left:4px solid #ddd;box-shadow:0 2px 4px rgba(0,0,0,.05)}
+.site-item:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateX(4px)}
+.site-item.active{background:#667eea;color:#fff;border-left-color:#667eea}
+.site-number{display:inline-block;background:rgba(102,126,234,.1);padding:2px 8px;border-radius:4px;font-weight:700;margin-right:8px;font-size:12px}
+.site-item.active .site-number{background:rgba(255,255,255,.3)}
+.site-region{font-size:13px;color:#999;margin-top:4px}
+.site-item.active .site-region{color:rgba(255,255,255,.8)}
+@media(max-width:480px){
+  .header{padding:16px}
+  .list-container{margin-top:220px;padding:0 16px 16px}
+  .site-item{padding:12px}
+  .btn{font-size:13px;padding:10px}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-top">
+    <button class="lang-btn active" data-lang="it">🇮🇹 ITA</button>
+    <button class="lang-btn" data-lang="en">🇬🇧 ENG</button>
+  </div>
+  <div class="site-display" id="siteDisplay">Seleziona un sito per iniziare</div>
+  <div class="controls">
+    <button class="btn btn-play" id="playBtn">▶ PLAY</button>
+    <button class="btn btn-stop" id="stopBtn">⏸ PAUSA</button>
+  </div>
+  <div class="progress-wrap" id="progressWrap">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="progress-thumb" id="progressThumb"></div>
+  </div>
+</div>
+ 
+<div class="list-container" id="listContainer"></div>
+ 
+<script>
+const sites = [
+  {region:"Calabria",name:"Museo Archeologico Nazionale di Reggio Calabria (Bronzi di Riace, Sezione Preistorica, Sezione Romana)",city:"Reggio Calabria",
+  it:"Ecco il testo riscritto per la narrazione audio, con punteggiatura calibrata per le pause naturali del parlato: --- Ci troviamo nella sala climatizzata che ospita i capolavori più celebri del museo: i Bronzi di Riace. Si tratta di due statue greche originali in bronzo, risalenti alla metà del V secolo avanti Cristo. Furono rinvenute il 16 agosto 1972, nei fondali di fronte a Riace Marina, in provincia di Reggio Calabria, a circa otto metri di profondità, dal sub romano Stefano Mariottini. Le due figure, note come Statua A e Statua B, raffigurano due guerrieri nudi stanti, di poco inferiori ai due metri di altezza. Ciò che colpisce immediatamente è lo straordinario stato di conservazione e la raffinatezza esecutiva. Gli occhi sono realizzati con paste vitree, avorio e calcite, e conferiscono alle figure uno sguardo vivo e penetrante. Le labbra e i capezzoli sono rivestiti di rame rosso, mentre i denti della Statua A sono in argento. Questi dettagli, uniti alla resa della muscolatura e alla postura dinamica dei corpi, testimoniano il livello più alto raggiunto dalla bronzistica greca nel pieno periodo classico. Nella stessa sala sono esposti altri due bronzi di eccezionale valore. Il primo è la Testa del Filosofo, rinvenuta nel 1969 nei fondali di Porticello, nel territorio di Villa San Giovanni, insieme ad altri frammenti bronzei appartenenti probabilmente al carico di un antico relitto. Per le sue fattezze — una lunga barba fluente e un'espressione meditativa e intensa — questa testa è stata tradizionalmente associata al ritratto di Pitagora di Samo, il celebre matematico e filosofo vissuto nel VI secolo avanti Cristo, sebbene tale identificazione rimanga aperta al dibattito scientifico. Il secondo è la Testa di Basilea, anch'essa proveniente dal medesimo relitto di Porticello, e così denominata perché a lungo conservata presso l'Antikenmuseum di Basilea prima del suo rientro in Italia. Si tratta di un ritratto maschile in bronzo di altissima qualità, coevo alle altre opere dello stesso contesto. --- Entriamo ora nella Sezione Preistorica del museo, dove è esposto il calco dell'incisione rupestre raffigurante un Bos taurus primigenius, ovvero l'uro, l'antenato selvatico del bovino domestico. L'originale si trova ancora in situ, sulla parete rocciosa della Grotta del Romito, nei pressi di Papasidero, in provincia di Cosenza, ed è databile a circa quindicimila anni fa, nel periodo dell'Epigravettiano finale. Si tratta di uno degli esempi più antichi e significativi di arte rupestre in Italia. L'animale è reso con precisione e forza espressiva notevoli: il corpo possente, la testa abbassata e la muscolatura in tensione rivelano un'osservazione diretta e attenta della fauna vissuta in questo territorio alla fine dell'ultima glaciazione. --- Concludiamo con un'opera proveniente dall'agro dell'antica Regium Iulii. Questo mosaico fu rinvenuto nella cosiddetta Casa del mosaico, a Taureana, nel territorio dell'odierna Palmi, in provincia di Reggio Calabria. Realizzato con la raffinata tecnica dell'opus vermiculatum — nella quale piccole tessere seguono i contorni delle figure quasi come pennellate — raffigura una vivace scena di caccia all'orso, con cacciatori in movimento dinamico. Il mosaico decorava il pavimento al centro di una sala da banchetto, e insieme ad esso fu rinvenuto un letto in bronzo, detto klinē, il tipico giaciglio utilizzato nell'antichità per i conviti e le cerimonie. L'insieme restituisce l'immagine di un ambiente di grande lusso, appartenuto con ogni probabilità a un esponente dell'élite locale di età imperiale romana.",
+  en:""},
+  {region:"Campania",name:"Museo Archeologico Nazionale di Napoli — MANN (Collezione Farnese, Sezione Egizia, Sezione Magna Grecia, Sezione Pompeiana)",city:"Napoli",
+  it:"",
+  en:""},
+   {region:"Campania",name:" Museo di Capodimonte (Dipinti di Tiziano-Raffaello-Caravaggio, Appartamenti Reali, Collezione d'Arte Contemporanea)",city:"Napoli",
+  it:"",
+  en:""},
+   {region:"Emilia-Romagna",name:"",city:"Ravenna",
+  it:"",
+  en:""},
+  {region:"",name:"",city:"",
+  it:"",
+  en:""},
+   {region:"",name:"",city:"",
+  it:"",
+  en:""},
+   {region:"",name:"",city:"",
+  it:"",
+  en:""},
+ 
+  
+];
+ 
+// ─── State ────────────────────────────────────────────────────────────────────
+let lang = 'it';
+let selectedIdx = -1;
+let isPlaying = false;
+let utterance = null;
+ 
+// Time-based tracking (works on mobile where onboundary is absent)
+let playStartTime = 0;       // Date.now() when current segment started
+let playOffset = 0;          // absolute char index where current segment started
+let pauseCharIdx = 0;        // absolute char index saved at pause — used for resume
+let animFrame = null;        // rAF handle
+let chunks = [];
+let currentChunkIdx = 0;
+
+// ─── Background: mantiene audio attivo a schermo bloccato ─────────────────────
+let _bgAudio = null;
+let _resumeTimer = null;
+
+// Tono a 1Hz (inudibile: sotto soglia umana) — NON silenzio puro
+// Chrome conta solo audio con dati non-zero come "media attivo"
+const _toneURL = (() => {
+  const sr = 44100, n = sr;
+  const buf = new ArrayBuffer(44 + n * 2);
+  const v = new DataView(buf);
+  const w = (o, s) => { for (let i = 0; i < s.length; i++) v.setUint8(o + i, s.charCodeAt(i)); };
+  w(0, 'RIFF'); v.setUint32(4, 36 + n * 2, true); w(8, 'WAVE');
+  w(12, 'fmt '); v.setUint32(16, 16, true); v.setUint16(20, 1, true); v.setUint16(22, 1, true);
+  v.setUint32(24, sr, true); v.setUint32(28, sr * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+  w(36, 'data'); v.setUint32(40, n * 2, true);
+  // Onda sinusoidale a 1Hz (ampiezza 100 per non essere completamente muta)
+  for (let i = 0; i < n; i++) {
+    const val = Math.sin(2 * Math.PI * i / sr) * 100;
+    v.setInt16(44 + i * 2, Math.max(-32768, Math.min(32767, val)), true);
+  }
+  return URL.createObjectURL(new Blob([buf], { type: 'audio/wav' }));
+})();
+
+function startBgKeep() {
+  if (_bgAudio) return;
+  _bgAudio = new Audio(_toneURL);
+  _bgAudio.loop = true;
+  _bgAudio.volume = 0.001; // quasi muto ma non zero
+  _bgAudio.play().catch(() => {});
+  // 2) polling → riprende speechSynthesis se Chrome l'ha messa in pausa
+  if (!_resumeTimer) {
+    _resumeTimer = setInterval(() => {
+      if (isPlaying && speechSynthesis.paused) speechSynthesis.resume();
+    }, 500);
+  }
+}
+
+function stopBgKeep() {
+  if (_bgAudio) { _bgAudio.pause(); _bgAudio = null; }
+  if (_resumeTimer) { clearInterval(_resumeTimer); _resumeTimer = null; }
+}
+ 
+// ─── Chars-per-second estimate ────────────────────────────────────────────────
+// Default speech is ~150 wpm. Italian avg word ~5.5 chars + 1 space = ~6.5 chars.
+// 150 wpm × 6.5 / 60 s ≈ 16 chars/s at rate 1.0
+// We scale by the utterance rate.
+function getCharsPerSecond() {
+  const rate = (lang === 'it') ? 1.0 : 0.9;
+  return 16 * rate;
+}
+ 
+// ─── DOM ──────────────────────────────────────────────────────────────────────
+const playBtn      = document.getElementById('playBtn');
+const stopBtn      = document.getElementById('stopBtn');
+const siteDisplay  = document.getElementById('siteDisplay');
+const listContainer= document.getElementById('listContainer');
+const progressBar  = document.getElementById('progressBar');
+const progressThumb= document.getElementById('progressThumb');
+const progressWrap = document.getElementById('progressWrap');
+ 
+// ─── Build list ───────────────────────────────────────────────────────────────
+sites.forEach((s, i) => {
+  const el = document.createElement('div');
+  el.className = 'site-item';
+  el.dataset.index = i;
+  el.innerHTML = `<span class="site-number">${i+1}</span><strong>${s.name}</strong><div class="site-region">${i+1}. ${s.region} • ${s.city}</div>`;
+  el.addEventListener('click', () => selectSite(i));
+  listContainer.appendChild(el);
+});
+ 
+// ─── Language buttons ─────────────────────────────────────────────────────────
+document.querySelectorAll('.lang-btn').forEach(btn => btn.addEventListener('click', () => {
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  lang = btn.dataset.lang;
+  stopAndReset();
+}));
+ 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+function getText() {
+  if (selectedIdx < 0) return '';
+  return lang === 'it' ? sites[selectedIdx].it : sites[selectedIdx].en;
+}
+ 
+function setProgress(pct) {
+  pct = Math.max(0, Math.min(100, pct));
+  progressBar.style.width = pct + '%';
+  progressThumb.style.left = pct + '%';
+}
+ 
+// Snap charIdx back to the start of the current word (avoid mid-word start)
+function snapToWord(text, charIdx) {
+  if (charIdx <= 0) return 0;
+  let i = charIdx;
+  while (i > 0 && !/\s/.test(text[i - 1])) i--;
+  return i;
+}
+ 
+// ─── rAF-based progress animation ─────────────────────────────────────────────
+function startAnimation() {
+  stopAnimation();
+  function tick() {
+    if (!isPlaying) return;
+    const fullText = getText();
+    if (!fullText) return;
+    const elapsed = (Date.now() - playStartTime) / 1000;
+    const estimatedAbs = playOffset + elapsed * getCharsPerSecond();
+    const clampedAbs = Math.min(estimatedAbs, fullText.length);
+    pauseCharIdx = Math.floor(clampedAbs);          // keep updated every frame
+    setProgress((clampedAbs / fullText.length) * 100);
+    animFrame = requestAnimationFrame(tick);
+  }
+  animFrame = requestAnimationFrame(tick);
+}
+ 
+function stopAnimation() {
+  if (animFrame) { cancelAnimationFrame(animFrame); animFrame = null; }
+}
+ 
+// ─── Cancel speech + animation ────────────────────────────────────────────────
+function cancelSpeech() {
+  speechSynthesis.cancel();
+  stopAnimation();
+  stopBgKeep();
+  isPlaying = false;
+  playBtn.disabled = false;
+  chunks = [];
+}
+ 
+function stopAndReset() {
+  cancelSpeech();
+  playOffset   = 0;
+  pauseCharIdx = 0;
+  setProgress(0);
+}
+ 
+// ─── Select site ──────────────────────────────────────────────────────────────
+function selectSite(idx) {
+  if (idx !== selectedIdx) stopAndReset();
+  selectedIdx = idx;
+  document.querySelectorAll('.site-item').forEach(el => el.classList.remove('active'));
+  document.querySelector(`[data-index="${idx}"]`).classList.add('active');
+  siteDisplay.innerHTML = `<span class="number">${idx+1}.</span> ${sites[idx].name}`;
+}
+ 
+// Divide il testo in pezzi da max ~2500 caratteri, tagliando sui punti/punto e virgola
+function splitIntoChunks(text, maxLen) {
+  const result = [];
+  let start = 0;
+  while (start < text.length) {
+    let end = Math.min(start + maxLen, text.length);
+    if (end < text.length) {
+      // cerca l'ultimo punto/newline prima di end
+      let cut = -1;
+      for (let i = end; i > start + maxLen * 0.5; i--) {
+        if ('.!?\n'.includes(text[i])) { cut = i + 1; break; }
+      }
+      if (cut > start) end = cut;
+    }
+    result.push({ start, end, text: text.slice(start, end) });
+    start = end;
+  }
+  return result;
+}
+
+// ─── Core: speak from absolute char index ─────────────────────────────────────
+function speakFrom(charIdx) {
+  cancelSpeech();
+  startBgKeep();
+  const fullText = getText();
+  if (!fullText) return;
+
+  const snapped = snapToWord(fullText, charIdx);
+  pauseCharIdx = snapped;
+
+  // Costruisci i chunk dall'inizio
+  const allChunks = splitIntoChunks(fullText, 2500);
+
+  // Trova il chunk da cui partire (quello che contiene snapped)
+  let startChunk = 0;
+  for (let i = 0; i < allChunks.length; i++) {
+    if (allChunks[i].end > snapped) { startChunk = i; break; }
+  }
+
+  chunks = allChunks;
+  currentChunkIdx = startChunk;
+
+  // Il primo chunk potrebbe dover partire a metà
+  const firstChunkStart = snapped - allChunks[startChunk].start;
+  playOffset = snapped;
+  playStartTime = Date.now();
+
+  function speakChunk(chunkIdx, offsetInChunk) {
+    if (chunkIdx >= chunks.length) {
+      // Fine testo
+      stopAnimation();
+      stopBgKeep();
+      isPlaying = false;
+      playBtn.disabled = false;
+      setProgress(100);
+      playOffset   = 0;
+      pauseCharIdx = 0;
+      return;
+    }
+
+    const chunk = chunks[chunkIdx];
+    const textToSpeak = chunk.text.substring(offsetInChunk || 0);
+
+    utterance = new SpeechSynthesisUtterance(textToSpeak);
+    utterance.lang = (lang === 'it') ? 'it-IT' : 'en-US';
+    utterance.rate = (lang === 'it') ? 1.0 : 0.9;
+
+    utterance.onboundary = (e) => {
+      if (e.name !== 'word') return;
+      playStartTime = Date.now() - (e.charIndex / getCharsPerSecond()) * 1000;
+    };
+
+    utterance.onstart = () => {
+      isPlaying = true;
+      playBtn.disabled = true;
+      playStartTime = Date.now();
+      // playOffset è già impostato correttamente prima di chiamare speakChunk
+      startAnimation();
+    };
+
+    utterance.onend = () => {
+      stopAnimation();
+      if (!isPlaying) return; // pausa/stop manuale
+      currentChunkIdx = chunkIdx + 1;
+      playOffset = chunks[chunkIdx].end;
+      pauseCharIdx = playOffset;
+      playStartTime = Date.now();
+      speakChunk(currentChunkIdx, 0);
+    };
+
+
+    utterance.onerror = (e) => {
+      if (e.error === 'interrupted') return;
+      stopAnimation();
+      isPlaying = false;
+      playBtn.disabled = false;
+    };
+
+    speechSynthesis.speak(utterance);
+  }
+
+  isPlaying = true;
+  playBtn.disabled = true;
+  speakChunk(startChunk, firstChunkStart > 0 ? firstChunkStart : 0);
+}
+ 
+// ─── Play button ──────────────────────────────────────────────────────────────
+playBtn.addEventListener('click', () => {
+  if (selectedIdx < 0 || isPlaying) return;
+  // Resume from where we paused (pauseCharIdx updated every rAF frame while playing)
+  speakFrom(pauseCharIdx);
+});
+ 
+// ─── Pause button ─────────────────────────────────────────────────────────────
+stopBtn.addEventListener('click', () => {
+  if (!isPlaying) return;
+  // pauseCharIdx is already up-to-date from the last rAF tick
+  const savedChar = pauseCharIdx;
+  const savedPct  = parseFloat(progressBar.style.width) || 0;
+  cancelSpeech();
+  pauseCharIdx = savedChar;   // restore after cancelSpeech (which doesn't touch it)
+  setProgress(savedPct);
+});
+ 
+// ─── Progress bar: seek by click or drag ──────────────────────────────────────
+function seekTo(e) {
+  if (selectedIdx < 0) return;
+  const rect = progressWrap.getBoundingClientRect();
+  const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  const pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+  const fullText = getText();
+  if (!fullText) return;
+  pauseCharIdx = Math.floor(pct * fullText.length);
+  setProgress(pct * 100);
+  speakFrom(pauseCharIdx);
+}
+ 
+let dragging = false;
+progressWrap.addEventListener('mousedown',  e => { dragging = true; seekTo(e); });
+document.addEventListener('mousemove',      e => { if (dragging) seekTo(e); });
+document.addEventListener('mouseup',        ()=> { dragging = false; });
+progressWrap.addEventListener('touchstart', e => { dragging = true; seekTo(e); }, {passive:true});
+document.addEventListener('touchmove',      e => { if (dragging) seekTo(e); }, {passive:true});
+document.addEventListener('touchend',       ()=> { dragging = false; });
+</script>
+</body>
+</html>
+ 
